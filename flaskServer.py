@@ -90,13 +90,7 @@ def search(userDetails):
     type = request.args.get('type', None)
     if king is None:
         return '<h1> Parameter king is required </h1>'
-    if location is not None and type != None:
-        return sqlConnections.getBattlesByNameLocationType(king, location, type)
-    if location != None:
-        return sqlConnections.getBattlesByNameLocation(king, location)
-    if type != None:
-        return sqlConnections.getBattlesByNameType(king, type)
-    return sqlConnections.getBattlesByName(king)
+    return sqlConnections.getBattlesByName(king, location, type)
 
 
 @app.route('/api/battle', methods=['GET', 'POST', 'PUT', 'DELETE'])

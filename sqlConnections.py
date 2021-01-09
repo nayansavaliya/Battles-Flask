@@ -15,7 +15,7 @@ sql = db.cursor()
 
 # Query functions
 def getActive(active):
-    sql.execute("""SELECT {},count({}) AS most_active_count 
+    sql.execute("""SELECT {},count({}) AS most_active_count
                     FROM battles_data
                     GROUP BY {}
                     ORDER BY  COUNT(most_active_count) DESC
@@ -24,7 +24,7 @@ def getActive(active):
 
 
 def getOutcome(outcome, where):
-    sql.execute("""SELECT {},count({}) AS most_active_count 
+    sql.execute("""SELECT {},count({}) AS most_active_count
                     FROM battles_data
                     WHERE {} = '{}'
                     GROUP BY {};""".format(outcome, outcome, outcome, where, outcome))
@@ -90,12 +90,20 @@ def getStats():
     return json.dumps(stats)
 
 
-def getBattlesByName(name):
-    sql.execute(
-        "SELECT name FROM battLes_data WHERE (attacker_king = '{}' OR defender_king = '{}')".format(name, name))
+def getBattlesByName(name, location=None, type=None):
+    query = "SELECT name FROM battLes_data WHERE (attacker_king = '{}' OR defender_king = '{}')".format(
+        name, name)
+    if location != None:
+        query = query + " AND location = '{}'".format(location)
+    if type != None:
+        query = query + " AND battle_type = '{}'".format(type)
+    sql.execute(query)
     results = sql.fetchall()
     data = [data[0] for data in results]
     return json.dumps(data)
+
+
+print(getBattlesByName("Robb Stark", "Riverrun", "siege"))
 
 
 def getBattlesByNameLocation(name, location):
@@ -179,6 +187,3 @@ def deleteBattle(battleName):
         if len(results) == 0:
             return "Delete Successful"
         return "Please try again"
-
-
-
